@@ -1,8 +1,8 @@
-package repository
+package dataLayer
 
 import models.*
 
-object BankUserRepository {
+object BankUserDb {
     val users = listOf<User>(
         Mother(
             userName = "Mother",
