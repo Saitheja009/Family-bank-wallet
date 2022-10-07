@@ -62,7 +62,7 @@ internal const val LOGOUT = 7
 internal const val PARENT_BLOCK_FAMILY_MEMBER = 5
 
 // Kid specific
-internal const val kidTransactionLimit = 50
+internal const val kidTransactionLimit = 51
 
 // Balance Low Limit
 internal const val bankBalanceLowLimit = 100
@@ -158,7 +158,7 @@ fun printTransaction(transaction: Transaction, withTitle: Boolean = false, SNo: 
     if (withTitle) {
         println(
             String.format(
-                "%5s %10s %10s %10s %10s %20s %15s",
+                "%5s %10s %10s %20s %10s %20s %20s",
                 "S.no",
                 "Withdrawn",
                 "Deposit",
@@ -171,7 +171,7 @@ fun printTransaction(transaction: Transaction, withTitle: Boolean = false, SNo: 
     }
     println(
         String.format(
-            "%5d %10d %10d %10s %10s %20s %15s",
+            "%5d %10d %10d %20s %10s %20s %20s",
             SNo,
             transaction.withdrawn ?: 0,
             transaction.deposit ?: 0,
