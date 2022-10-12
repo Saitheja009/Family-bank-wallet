@@ -57,6 +57,7 @@ internal const val SPEND_MONEY = 3
 internal const val TRANSACTIONS = 4
 internal const val EXIT = 6
 internal const val LOGOUT = 7
+internal const val WITHDRAW_MONEY = 8
 
 // Parent specific
 internal const val PARENT_BLOCK_FAMILY_MEMBER = 5
@@ -78,6 +79,7 @@ internal val kidMenu: Map<Int, String> = mapOf(
 
 val motherMenu: Map<Int, String> = mapOf(
     NOTIFICATIONS to "Notifications",
+    WITHDRAW_MONEY to "Withdraw money",
     TRANSFER_MONEY to "Money Transfer",
     SPEND_MONEY to "Spend Money",
     TRANSACTIONS to "View transactions",
@@ -87,6 +89,7 @@ val motherMenu: Map<Int, String> = mapOf(
 
 val fatherMenu: Map<Int, String> = mapOf(
     NOTIFICATIONS to "Notifications",
+    WITHDRAW_MONEY to "Withdraw money",
     TRANSFER_MONEY to "Money Transfer",
     TRANSACTIONS to "View transactions",
     SPEND_MONEY to "Spend Money",
@@ -186,7 +189,7 @@ fun printTransaction(transaction: Transaction, withTitle: Boolean = false, SNo: 
 fun printBankAccounts(bankAccounts: List<BankAccount>) {
     println(
         String.format(
-            "%5s %10s %10s",
+            "%5s %20s %10s",
             "S.no",
             "Bank name",
             "Balance"
@@ -195,7 +198,7 @@ fun printBankAccounts(bankAccounts: List<BankAccount>) {
     bankAccounts.forEachIndexed { index, bankAccount ->
         println(
             String.format(
-                "%5d %10s %10s",
+                "%5d %20s %10s",
                 index + 1,
                 bankAccount.name,
                 bankAccount.amount,

@@ -217,7 +217,7 @@ class BankWallet {
             val kid = (Session.user as Kid)
             bankRepository.notifications.add(
                 Notification(
-                    "Permission to spend more than \$ $kidTransactionLimit",
+                    "Permission to spend more than \$ ${kidTransactionLimit - 1}",
                     action = NotificationAction.OVER_LIMIT_PERMISSION,
                     belongsTo = kid.mother,
                     sentBy = kid.userName
@@ -287,6 +287,25 @@ class BankWallet {
         }
         else
         {
+            false
+        }
+    }
+
+    fun withdrawMoney(bankAccount: BankAccount, moneyToWithdraw: Long):Boolean {
+        return if(Session.user is Parent) {
+            bankAccount.amount += moneyToWithdraw
+            BankUserDb.bankAccount.amount -= moneyToWithdraw
+            BankUserDb.transactions.add(
+                Transaction(
+                    withdrawn = moneyToWithdraw,
+                    from = "WALLET",
+                    to = bankAccount.name,
+                    doneOn = Date(),
+                    doneBy = Session.user?.userName?:"-"
+                )
+            )
+            true
+        } else{
             false
         }
     }

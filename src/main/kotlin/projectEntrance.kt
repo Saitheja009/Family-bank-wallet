@@ -1,7 +1,7 @@
 import models.*
 import utils.*
 
-var shouldResetContext:Boolean = true
+var shouldResetContext: Boolean = true
 fun main() {
     var shouldRun: Boolean = true
     val bankWallet: BankWallet = BankWallet()
@@ -22,11 +22,9 @@ fun main() {
 }
 
 fun resetContext() {
-    if(shouldResetContext)
-    {
+    if (shouldResetContext) {
         Session.context.menuSelected = null
-    }
-    else{
+    } else {
         shouldResetContext = true
     }
 }
@@ -35,6 +33,11 @@ fun handleUserSelection(bankWallet: BankWallet): Boolean {
     when (Session.context.menuSelected) {
         NOTIFICATIONS -> {
             showNotifications(bankWallet.getCurrentUserNotifications(), bankWallet)
+            resetContext()
+        }
+
+        WITHDRAW_MONEY -> {
+            checkBalanceAndWithdrawMoney(bankWallet)
             resetContext()
         }
 
@@ -70,6 +73,47 @@ fun handleUserSelection(bankWallet: BankWallet): Boolean {
         else -> showMenu(bankWallet.getMenu())
     }
     return true
+}
+
+fun checkBalanceAndWithdrawMoney(bankWallet: BankWallet) {
+    if (bankWallet.getBalance() > 0) {
+        longInputReader("How much do you like to withdraw")
+            ?.let {
+                if (bankWallet.getBalance() >= it) {
+                    val bankAccounts = bankWallet.getBankAccounts()
+                    if (!bankAccounts.isNullOrEmpty()) {
+                        bankAccounts.forEachIndexed { index, bankAccount ->
+                            println("${index + 1}. ${bankAccount.name}")
+                        }
+                        intInputReader("Please select a bank account")?.let { bankIndex ->
+                            if (bankIndex < bankAccounts.size)
+                            {
+                                val isWithdrawComplete = bankWallet.withdrawMoney(bankAccounts[bankIndex - 1], it)
+                                if(isWithdrawComplete)
+                                {
+                                   println(transferSuccessful)
+                                    println("Your ${bankAccounts[bankIndex - 1].name} balance is \$ ${bankAccounts[bankIndex - 1].amount}")
+                                   println("Your wallet balance is \$ ${bankWallet.getBalance()}")
+                                }
+                                else{
+                                    println("Transaction not possible")
+                                }
+                            }
+                            else{
+                                println(invalidResponseMsg)
+                            }
+                        }
+                    } else {
+                        println("Transaction not possible as user doesn't have a bank account")
+                    }
+                }
+                else{
+                    println("Low balance transaction not possible")
+                }
+            }
+    } else {
+        println("Your bank wallet is empty, can't withdraw money")
+    }
 }
 
 fun checkBalanceAndTransferMoney(bankWallet: BankWallet) {
@@ -149,7 +193,8 @@ fun takeRequiredDetailsAndSpendMoney(bankWallet: BankWallet) {
     if (bankWallet.canTransferMoney()) {
         longInputReader(amountToSend)?.let { amountToSpend ->
             if (amountToSpend > kidTransactionLimit
-                || bankWallet.getCurrentUser() is Parent) {
+                || bankWallet.getCurrentUser() is Parent
+            ) {
                 if (bankWallet.canTransferMoreThanLimit()) {
                     askForOtherDetailsAndInitiateTransaction(amountToSpend, bankWallet)
                 } else {
@@ -174,23 +219,19 @@ fun askForOtherDetailsAndInitiateTransaction(amountToSpend: Long, bankWallet: Ba
             printTransaction(transaction, withTitle = true)
             println("Your wallet balance is ${bankWallet.getBalance()}")
         } else {
-          if(bankWallet.getCurrentUser() is Parent)
-          {
-              booleanInputReader(lowBalanceTransferMoney)
-                  ?.let {
-                      if(it)
-                      {
-                          Session.context.menuSelected = TRANSFER_MONEY
-                          shouldResetContext = false
-                      }
-                      else{
-                          println(skippingThatForNow)
-                      }
-                  }
-          }
-            else{
-              println(transactionFailedOFLowBalance)
-          }
+            if (bankWallet.getCurrentUser() is Parent) {
+                booleanInputReader(lowBalanceTransferMoney)
+                    ?.let {
+                        if (it) {
+                            Session.context.menuSelected = TRANSFER_MONEY
+                            shouldResetContext = false
+                        } else {
+                            println(skippingThatForNow)
+                        }
+                    }
+            } else {
+                println(transactionFailedOFLowBalance)
+            }
         }
     }
 }
