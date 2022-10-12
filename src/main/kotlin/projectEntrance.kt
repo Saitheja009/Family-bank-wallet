@@ -318,7 +318,7 @@ fun shouldProvidePermissionToUseWalletTwice(bankWallet: BankWallet, notification
 }
 
 fun shouldGivePermissionForOverLimit(bankWallet: BankWallet, notification: Notification) {
-    booleanInputReader("Do you want to provide permission for ${notification.sentBy} to spend more than $kidTransactionLimit")?.let {
+    booleanInputReader("Do you want to provide permission for ${notification.sentBy} to spend more than ${kidTransactionLimit - 1}")?.let {
         if (it) {
             if (bankWallet.providePermissionForKidLimitTransaction(notification)) {
                 println(providedPermissionForOverLimitTransaction)
