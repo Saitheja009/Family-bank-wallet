@@ -8,7 +8,7 @@ Run main function in `projectEntrance.kt`
 
 ### Project is written based on the following constraints
 
-``` 
+```
 You will design a bank wallet for a family where all the family members (10 members). The wallet
 can be linked by one bank or two bank accounts under the following conditions:
 1) Dad and Mam have full access to pay using this wallet and withdraw money.
@@ -36,4 +36,12 @@ can be linked by one bank or two bank accounts under the following conditions:
 6. As you work on your project, record the time each activity takes you (if you must add
    activities to the plan, estimate a time also).
 7. Present a report showing your diagram and its relation to your code structure and code.
-8. Present a report of the plan, estimated time, and actual time to complete each activity. ```
+8. Present a report of the plan, estimated time, and actual time to complete each activity.
+```
+
+
+UML diagram for project:
+
+![UML](assets/umlDiagram.png)
+
+Note:Tto open UML in draw.io, please check the `assets/umlDemo.io` file
