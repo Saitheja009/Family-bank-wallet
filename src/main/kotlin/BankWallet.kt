@@ -109,10 +109,13 @@ class BankWallet {
                         break
                     }
                 }
-                sendNotificationToParentIfBalanceIsLow()
             }
 
             bankUserDb.bankAccount.amount -= amount
+            if(Session.user is Kid)
+            {
+                sendNotificationToParentIfBalanceIsLow()
+            }
             transaction
         } else {
             null
@@ -149,14 +152,14 @@ class BankWallet {
                 val kid = (Session.user as Kid)
                 bankUserDb.notifications.add(
                     Notification(
-                        message = "Low balance",
+                        message = "Wallet balance is less than \$ 100",
                         belongsTo = kid.mother,
                         sentBy = Session.user?.userName.toString()
                     )
                 )
                 bankUserDb.notifications.add(
                     Notification(
-                        message = "Low balance",
+                        message = "Wallet balance is less than \$ 100",
                         belongsTo = kid.father,
                         sentBy = Session.user?.userName.toString()
                     )
