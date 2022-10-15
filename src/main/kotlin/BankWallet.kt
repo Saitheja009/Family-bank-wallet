@@ -1,15 +1,15 @@
-import models.*
 import dataLayer.BankUserDb
+import models.*
 import utils.*
 import utils.kidMenu
 import utils.kidTransactionLimit
 import java.util.Date
 
 class BankWallet {
-    private val bankRepository = BankUserDb
+    private val bankUserDb = BankUserDb()
 
     fun login(userName: String, password: String): Boolean {
-        val user = bankRepository.users.filter {
+        val user = bankUserDb.users.filter {
             it.userName == userName && it.password == password
         }
         return if (user.isNotEmpty()) {
@@ -22,7 +22,7 @@ class BankWallet {
     }
 
     fun getCurrentUserNotifications(): List<Notification> {
-        return bankRepository.notifications.filter { it.belongsTo == Session.user?.userName && !it.markAsRead }
+        return bankUserDb.notifications.filter { it.belongsTo == Session.user?.userName && !it.markAsRead }
     }
 
     fun getMenu(): Map<Int, String> {
@@ -71,7 +71,7 @@ class BankWallet {
     fun sendKidTransactionRequest(): Boolean {
         if (Session.user is Kid) {
             val kid = Session.user as Kid
-            BankUserDb.notifications.add(
+            bankUserDb.notifications.add(
                 Notification(
                     message = "Transaction request from ${kid.userName}",
                     belongsTo = kid.mother,
@@ -96,11 +96,11 @@ class BankWallet {
                 doneBy = Session.user?.userName.toString(),
                 doneOn = Date()
             )
-            BankUserDb.transactions.add(
+            bankUserDb.transactions.add(
               transaction
             )
             if (Session.user is Kid) {
-                for (user in bankRepository.users) {
+                for (user in bankUserDb.users) {
                     if (user.userName == Session.user?.userName
                         && user is Kid
                     ) {
@@ -112,7 +112,7 @@ class BankWallet {
                 sendNotificationToParentIfBalanceIsLow()
             }
 
-            BankUserDb.bankAccount.amount -= amount
+            bankUserDb.bankAccount.amount -= amount
             transaction
         } else {
             null
@@ -124,37 +124,37 @@ class BankWallet {
     }
 
     fun getBalance(): Long {
-        return bankRepository.bankAccount.amount
+        return bankUserDb.bankAccount.amount
     }
 
     fun getAllTransactions(): List<Transaction> {
         return if (Session.user is Parent)
-            BankUserDb.transactions
+            bankUserDb.transactions
         else
-            BankUserDb.transactions.filter {
+            bankUserDb.transactions.filter {
                 it.doneBy == Session.user?.userName
             }
     }
 
     fun getFamilyMembersToBlock(): List<User> {
-        return BankUserDb.users.filter { it !is Father }
+        return bankUserDb.users.filter { it !is Father }
     }
 
     private fun sendNotificationToParentIfBalanceIsLow()
     {
-        if(bankRepository.bankAccount.amount <= bankBalanceLowLimit)
+        if(bankUserDb.bankAccount.amount <= bankBalanceLowLimit)
         {
             if(Session.user is Kid)
             {
                 val kid = (Session.user as Kid)
-                bankRepository.notifications.add(
+                bankUserDb.notifications.add(
                     Notification(
                         message = "Low balance",
                         belongsTo = kid.mother,
                         sentBy = Session.user?.userName.toString()
                     )
                 )
-                bankRepository.notifications.add(
+                bankUserDb.notifications.add(
                     Notification(
                         message = "Low balance",
                         belongsTo = kid.father,
@@ -166,7 +166,7 @@ class BankWallet {
     }
 
     private fun isTransactionPossible(amount: Long): Boolean {
-        return if (BankUserDb.bankAccount.amount > amount) {
+        return if (bankUserDb.bankAccount.amount > amount) {
             true
         } else {
             sendNotificationToParentIfBalanceIsLow()
@@ -175,12 +175,12 @@ class BankWallet {
     }
 
     fun blockUser(user: User) {
-        bankRepository.blockedMembers.add(user)
+        bankUserDb.blockedMembers.add(user)
     }
 
     fun getBankAccounts(): List<BankAccount>? {
         return if (Session.user is Parent) {
-            val user = BankUserDb.users.filter {
+            val user = bankUserDb.users.filter {
                 it.userName == Session.user?.userName
             }
 
@@ -198,7 +198,7 @@ class BankWallet {
 
     fun transferMoney(currentBank: BankAccount, enteredAmount: Long):BankAccount? {
         currentBank.amount.minus(enteredAmount)
-        BankUserDb.transactions.add(
+        bankUserDb.transactions.add(
             Transaction(
                 deposit = enteredAmount,
                 from = currentBank.name,
@@ -207,7 +207,7 @@ class BankWallet {
                 doneOn = Date()
             )
         )
-        bankRepository.bankAccount.amount += enteredAmount
+        bankUserDb.bankAccount.amount += enteredAmount
         currentBank.amount -= enteredAmount
         return currentBank
     }
@@ -215,7 +215,7 @@ class BankWallet {
     fun raiseKidRequestForLimitMoneyTransfer(): Boolean {
         return if (Session.user is Kid) {
             val kid = (Session.user as Kid)
-            bankRepository.notifications.add(
+            bankUserDb.notifications.add(
                 Notification(
                     "Permission to spend more than \$ ${kidTransactionLimit - 1}",
                     action = NotificationAction.OVER_LIMIT_PERMISSION,
@@ -231,7 +231,7 @@ class BankWallet {
     }
 
     fun providePermissionForKidLimitTransaction(notification: Notification):Boolean {
-        for (user in bankRepository.users) {
+        for (user in bankUserDb.users) {
             if (user is Kid
                 && user.userName == notification.sentBy
             ) {
@@ -244,7 +244,7 @@ class BankWallet {
     }
 
     fun providePermissionToUseWalletTwice(notification: Notification): Boolean {
-        for (user in bankRepository.users) {
+        for (user in bankUserDb.users) {
             if (user.userName == notification.sentBy
                 && user is Kid
             ) {
@@ -258,7 +258,7 @@ class BankWallet {
 
     fun transferOverLimitPermissionToFather(notification: Notification)
     {
-        val kid = bankRepository.users.first { it.userName == notification.sentBy }
+        val kid = bankUserDb.users.first { it.userName == notification.sentBy }
         if(kid is Kid)
         {
             notification.belongsTo = kid.father
@@ -273,10 +273,10 @@ class BankWallet {
     }
 
     fun isUserBlocked(userName: String): Boolean {
-        return if(BankUserDb.blockedMembers.isNotEmpty())
+        return if(bankUserDb.blockedMembers.isNotEmpty())
         {
            try {
-               BankUserDb.blockedMembers.first {
+               bankUserDb.blockedMembers.first {
                    it.userName == userName
                }
                true
@@ -294,8 +294,8 @@ class BankWallet {
     fun withdrawMoney(bankAccount: BankAccount, moneyToWithdraw: Long):Boolean {
         return if(Session.user is Parent) {
             bankAccount.amount += moneyToWithdraw
-            BankUserDb.bankAccount.amount -= moneyToWithdraw
-            BankUserDb.transactions.add(
+            bankUserDb.bankAccount.amount -= moneyToWithdraw
+            bankUserDb.transactions.add(
                 Transaction(
                     withdrawn = moneyToWithdraw,
                     from = "WALLET",

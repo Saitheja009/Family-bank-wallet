@@ -2,7 +2,7 @@ package dataLayer
 
 import models.*
 
-object BankUserDb {
+class BankUserDb {
     val users = listOf<User>(
         Mother(
             userName = "Mother",

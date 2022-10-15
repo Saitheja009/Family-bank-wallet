@@ -78,39 +78,39 @@ fun handleUserSelection(bankWallet: BankWallet): Boolean {
 fun checkBalanceAndWithdrawMoney(bankWallet: BankWallet) {
     if (bankWallet.getBalance() > 0) {
         longInputReader("How much do you like to withdraw")
-            ?.let {
-                if (bankWallet.getBalance() >= it) {
-                    val bankAccounts = bankWallet.getBankAccounts()
-                    if (!bankAccounts.isNullOrEmpty()) {
-                        bankAccounts.forEachIndexed { index, bankAccount ->
-                            println("${index + 1}. ${bankAccount.name}")
-                        }
-                        intInputReader("Please select a bank account")?.let { bankIndex ->
-                            if (bankIndex < bankAccounts.size)
-                            {
-                                val isWithdrawComplete = bankWallet.withdrawMoney(bankAccounts[bankIndex - 1], it)
-                                if(isWithdrawComplete)
+                ?.let {
+                    if (bankWallet.getBalance() >= it) {
+                        val bankAccounts = bankWallet.getBankAccounts()
+                        if (!bankAccounts.isNullOrEmpty()) {
+                            bankAccounts.forEachIndexed { index, bankAccount ->
+                                println("${index + 1}. ${bankAccount.name}")
+                            }
+                            intInputReader("Please select a bank account")?.let { bankIndex ->
+                                if (bankIndex < bankAccounts.size)
                                 {
-                                   println(transferSuccessful)
-                                    println("Your ${bankAccounts[bankIndex - 1].name} balance is \$ ${bankAccounts[bankIndex - 1].amount}")
-                                   println("Your wallet balance is \$ ${bankWallet.getBalance()}")
+                                    val isWithdrawComplete = bankWallet.withdrawMoney(bankAccounts[bankIndex - 1], it)
+                                    if(isWithdrawComplete)
+                                    {
+                                        println(transferSuccessful)
+                                        println("Your ${bankAccounts[bankIndex - 1].name} balance is \$ ${bankAccounts[bankIndex - 1].amount}")
+                                        println("Your wallet balance is \$ ${bankWallet.getBalance()}")
+                                    }
+                                    else{
+                                        println("Transaction not possible")
+                                    }
                                 }
                                 else{
-                                    println("Transaction not possible")
+                                    println(invalidResponseMsg)
                                 }
                             }
-                            else{
-                                println(invalidResponseMsg)
-                            }
+                        } else {
+                            println("Transaction not possible as user doesn't have a bank account")
                         }
-                    } else {
-                        println("Transaction not possible as user doesn't have a bank account")
+                    }
+                    else{
+                        println("Low balance transaction not possible")
                     }
                 }
-                else{
-                    println("Low balance transaction not possible")
-                }
-            }
     } else {
         println("Your bank wallet is empty, can't withdraw money")
     }
@@ -122,12 +122,12 @@ fun checkBalanceAndTransferMoney(bankWallet: BankWallet) {
         printBankAccounts(bankAccounts)
         intInputReader(selectBankAccount)?.let { bankIndex ->
             if (bankIndex <= bankAccounts.size
-                && bankIndex > 0
+                    && bankIndex > 0
             ) {
                 val currentBank = bankAccounts[bankIndex - 1]
                 longInputReader(amountToTransfer)?.let { enteredAmount ->
                     if (enteredAmount <= currentBank.amount
-                        && enteredAmount > 0
+                            && enteredAmount > 0
                     ) {
                         val bankAccount = bankWallet.transferMoney(currentBank, enteredAmount)
                         if (bankAccount != null) {
@@ -170,16 +170,16 @@ fun takeRequiredDetailsAndBlockAFamilyMember(bankWallet: BankWallet) {
 fun showTransactions(transactions: List<Transaction>) {
     if (transactions.isNotEmpty()) {
         println(
-            String.format(
-                "%5s %10s %10s %10s %10s %20s %15s",
-                "S.no",
-                "Withdrawn",
-                "Deposit",
-                "From",
-                "To",
-                "Done by",
-                "Date"
-            )
+                String.format(
+                        "%5s %10s %10s %10s %10s %20s %15s",
+                        "S.no",
+                        "Withdrawn",
+                        "Deposit",
+                        "From",
+                        "To",
+                        "Done by",
+                        "Date"
+                )
         )
         transactions.forEachIndexed { index, transaction ->
             printTransaction(transaction, withTitle = false, index + 1)
@@ -193,7 +193,7 @@ fun takeRequiredDetailsAndSpendMoney(bankWallet: BankWallet) {
     if (bankWallet.canTransferMoney()) {
         longInputReader(amountToSend)?.let { amountToSpend ->
             if (amountToSpend > kidTransactionLimit
-                || bankWallet.getCurrentUser() is Parent
+                    || bankWallet.getCurrentUser() is Parent
             ) {
                 if (bankWallet.canTransferMoreThanLimit()) {
                     askForOtherDetailsAndInitiateTransaction(amountToSpend, bankWallet)
@@ -221,14 +221,14 @@ fun askForOtherDetailsAndInitiateTransaction(amountToSpend: Long, bankWallet: Ba
         } else {
             if (bankWallet.getCurrentUser() is Parent) {
                 booleanInputReader(lowBalanceTransferMoney)
-                    ?.let {
-                        if (it) {
-                            Session.context.menuSelected = TRANSFER_MONEY
-                            shouldResetContext = false
-                        } else {
-                            println(skippingThatForNow)
+                        ?.let {
+                            if (it) {
+                                Session.context.menuSelected = TRANSFER_MONEY
+                                shouldResetContext = false
+                            } else {
+                                println(skippingThatForNow)
+                            }
                         }
-                    }
             } else {
                 println(transactionFailedOFLowBalance)
             }
@@ -366,7 +366,7 @@ fun login(bankWallet: BankWallet) {
     println(loginUserMsg)
     val userName = readLine()
     if (!userName.isNullOrEmpty()
-        && !bankWallet.isUserBlocked(userName)
+            && !bankWallet.isUserBlocked(userName)
     ) {
         println(loginPasswordMsg)
         val password = readLine()
@@ -396,7 +396,7 @@ fun printAndSelectMenuHelper(menu: Map<Int, String>) {
     println(selectMenu)
     intInputReader()?.let {
         if (it > 0
-            && it <= menuMap.size
+                && it <= menuMap.size
         ) {
             Session.context.menuSelected = menuMap[it - 1]
         } else {
