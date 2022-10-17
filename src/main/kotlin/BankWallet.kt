@@ -5,7 +5,8 @@ import utils.kidMenu
 import utils.kidTransactionLimit
 import java.util.Date
 
-class BankWallet {
+class
+BankWallet {
     private val bankUserDb = BankUserDb()
 
     fun login(userName: String, password: String): Boolean {

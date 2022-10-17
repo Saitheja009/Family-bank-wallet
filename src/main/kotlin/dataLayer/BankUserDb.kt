@@ -49,47 +49,42 @@ class BankUserDb {
             father = "Father",
         ),
         Kid(
-            userName = "kid3",
+            userName = "Kid3",
             password = "123",
             mother = "Mother",
             father = "Father",
         ),
         Kid(
-            userName = "kid3",
+            userName = "Kid4",
             password = "123",
             mother = "Mother",
             father = "Father",
         ),
         Kid(
-            userName = "kid4",
+            userName = "Kid5",
             password = "123",
             mother = "Mother",
             father = "Father",
         ),
         Kid(
-            userName = "kid5",
+            userName = "Kid6",
             password = "123",
             mother = "Mother",
             father = "Father",
         ),
         Kid(
-            userName = "kid6",
+            userName = "Kid7",
             password = "123",
             mother = "Mother",
             father = "Father",
         ),
         Kid(
-            userName = "kid7",
+            userName = "Kid8",
             password = "123",
             mother = "Mother",
             father = "Father",
         ),
-        Kid(
-            userName = "kid8",
-            password = "123",
-            mother = "Mother",
-            father = "Father",
-        ),
+
     )
     val notifications = mutableListOf<Notification>()
     val bankAccount: BankAccount = BankAccount(amount = 1000, name = "WALLET")

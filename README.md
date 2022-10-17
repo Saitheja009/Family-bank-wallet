@@ -40,8 +40,3 @@ can be linked by one bank or two bank accounts under the following conditions:
 ```
 
 
-UML diagram for project:
-
-![UML](assets/umlDiagram.png)
-
-Note:Tto open UML in draw.io, please check the `assets/umlDemo.io` file
