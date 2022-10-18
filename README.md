@@ -2,9 +2,9 @@
 
 A simple command line input based bank wallet system written in kotlin
 
-### Getting started
-Please clone this project and open it in you favorite editor.  
-Run main function in `projectEntrance.kt`
+### How to execute the program
+follow the path src<main<kotlin<main.kt  
+Run main function in `Main.kt`
 
 ### Project is written based on the following constraints
 
