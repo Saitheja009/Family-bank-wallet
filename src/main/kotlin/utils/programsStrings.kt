@@ -174,10 +174,10 @@ fun printTransaction(transaction: Transaction, withTitle: Boolean = false, SNo: 
     }
     println(
         String.format(
-            "%5d %10d %10d %20s %10s %20s %20s",
+            "%5d %10s %10s %20s %10s %20s %20s",
             SNo,
-            transaction.withdrawn ?: 0,
-            transaction.deposit ?: 0,
+            (transaction.withdrawn ?: 0).toString(),
+            (transaction.deposit ?: 0).toString(),
             transaction.from ?: "---",
             transaction.to ?: "---",
             transaction.doneBy ?: "---",

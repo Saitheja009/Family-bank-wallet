@@ -171,7 +171,7 @@ fun showTransactions(transactions: List<Transaction>) {
     if (transactions.isNotEmpty()) {
         println(
                 String.format(
-                        "%5s %10s %10s %10s %10s %20s %15s",
+                    "%5s %10s %10s %20s %10s %20s %20s",
                         "S.no",
                         "Withdrawn",
                         "Deposit",
